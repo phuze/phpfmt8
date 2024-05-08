@@ -2624,7 +2624,7 @@ namespace {
 			'ReindentAndAlignObjOps' => false,
 			'ReindentObjOps' => false,
 
-			'AlignDoubleSlashComments' => false,
+			'AlignComments' => false,
 			'AlignTypehint' => false,
 			'AlignGroupDoubleArrow' => false,
 			'AlignDoubleArrow' => false,
@@ -7247,7 +7247,7 @@ EOT;
 		}
 	}
 
-	final class AlignDoubleSlashComments extends AdditionalPass {
+	final class AlignComments extends AdditionalPass {
 		const ALIGNABLE_COMMENT = "\x2 COMMENT%d \x3";
 
 		public function candidate($source, $foundTokens) {
@@ -7279,6 +7279,9 @@ EOT;
 					if (substr($text, 0, 2) == '//' && !$touchedNonAlignableComment) {
 						$prefix = sprintf(self::ALIGNABLE_COMMENT, $contextCounter);
 					}
+					elseif (substr($text, 0, 1) == '#' && substr($text, 0, 2) != '#[' && !$touchedNonAlignableComment) {
+						$prefix = sprintf(self::ALIGNABLE_COMMENT, $contextCounter);
+					}
 					$this->appendCode($prefix . $text);
 
 					break;
@@ -7305,7 +7308,7 @@ EOT;
 		}
 
 		public function getDescription() {
-			return 'Vertically align "//" comments.';
+			return 'Vertically align "//" and "#" comments.';
 		}
 
 		public function getExample() {
